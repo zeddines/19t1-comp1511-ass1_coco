@@ -63,7 +63,7 @@ int main(){
       }
       counter=0;
       //***retrieving information ends***//
-      printf("retrieved information\n");
+//      printf("retrieved information\n");
       //***finding cards playable***//
       
       int cards_playable[10]={0};
@@ -92,7 +92,7 @@ int main(){
                   num_cards_playable++;
                }
                counter=0;
-               printf("runned module 1\n");
+//               printf("runned module 1\n");
             }
             else{ //you have non prime cards, play non prime cards    mod 2
                while(counter<num_cards_in_hand){
@@ -103,7 +103,7 @@ int main(){
                   counter++;
                }
                counter=0;
-               printf("runned module 3\n");
+//               printf("runned module 3\n");
             }
          }
          else{ //prime cards are played, can play any cards   mod 1
@@ -113,7 +113,7 @@ int main(){
                num_cards_playable++;
             }
             counter=0;
-            printf("runned module 1\n");
+//            printf("runned module 1\n");
          }
       }
       else{ //not playing first card in round
@@ -131,7 +131,7 @@ int main(){
                   num_cards_playable++;
                }
                counter=0;  
-               printf("runned module 5\n");          
+//               printf("runned module 5\n");          
             }
             else{ //you have prime cards, play prime cards   mod 4
                while(counter<num_cards_in_hand){
@@ -142,7 +142,7 @@ int main(){
                   counter++;
                }
                counter=0;
-               printf("runned module 4\n");
+//               printf("runned module 4\n");
             }
          }
          else{ //the first card is not a prime card   
@@ -160,10 +160,10 @@ int main(){
                   num_cards_playable++;
                }
                counter=0; 
-               printf("runned module 7\n");                 
+//               printf("runned module 7\n");                 
             }
             else{ //have cocomposite cards, play cocomposite cards   mod 6
-               printf("counter= %d,num_cards_in_hand= %d\n",counter,num_cards_in_hand);
+//               printf("counter= %d,num_cards_in_hand= %d\n",counter,num_cards_in_hand);
                while(counter<num_cards_in_hand){
                   if(is_cocomposite(cards_in_hand[counter],cards_played_this_round[0])==1){
                      cards_playable[num_cards_playable]=cards_in_hand[counter];
@@ -185,13 +185,14 @@ int main(){
       //***finding cards playable end***//
 
       //***optimize***// pick the best card from the playble_card array
-      printf("cards playable = ");
+/*      printf("cards playable = ");
       while(counter<num_cards_playable){
          printf("%d  ",cards_playable[counter]);
          counter++;
       }
       counter=0;
-      printf("\n%d\n",cards_playable[0]);
+      printf("\n");*/
+      printf("%d\n",cards_playable[0]);
       
       //***optimize end***//
       
