@@ -101,7 +101,8 @@ int main(){
     //do not need to use it when playing the first card in round
     int num_cocomposites_in_hand = 0; 
     
-    //if get_trick = 0, you can pick any card and you will not win the round
+    //if get_trick = 0, you can pick any card and you will not win the round as
+    //you didn't follow the first card (used if not first card)
     int get_trick = 1; 
     
     //***variables end***//
@@ -321,19 +322,38 @@ int main(){
 }
 
 //***optimizing functions***//
-int optimize(int player, int num_cards_playable, int cards_playable[10], int cards_played_this_round[3], int num_cards_played_previous_rounds,
-             int cards_played_previous_rounds[40], int cards_discarded[3], int cards_received[3], int num_cards_in_hand,       
-             int cards_in_hand[10], int get_trick){  //player = num_cards_played_this_round
+            //player = num_cards_played_this_round
+int optimize(int player, int num_cards_playable, int cards_playable[10], 
+             int cards_played_this_round[3], int num_cards_played_previous_rounds,
+             int cards_played_previous_rounds[40], int cards_discarded[3], 
+             int cards_received[3], int num_cards_in_hand, int cards_in_hand[10], 
+             int get_trick){        
              
-    int cards_potentially_played_this_round[40] = {0};  //total cards-cards in previous round-cards played this round-cards in hand-(cards discarded, depending on my position)
+    //***variables***//             
+             
+    //total cards-cards in previous round-cards played this round-cards in hand
+    //-(cards discarded, depending on my position)       
+    int cards_potentially_played_this_round[40] = {0};  
     int num_cards_potentially_played_this_round = 0;
+    
+    //counters for loops
     int counter = 0;
     int counter2 = 0;
+    
 /*    int cards_played_previous_rounds_index = 0;
     int cards_played_this_round_index = 0;
     int cards_in_hand_index = 0;*/
+    
+    //if flag = 1, the number checking for the cards_potentially_played_this_round
+    //array is in other arrys, which means that the number will not get assigned into
+    //the cards_potentially_played_this_round array. if flag = 0, the number will
+    //get assigned
     int flag = 0; 
+    
+    //***variables end***//
+    
     printf("\n");
+    printf("cards_playable: "); 
     while(counter < num_cards_playable){
         printf("%d ", cards_playable[counter]);
         counter++;
@@ -341,7 +361,10 @@ int optimize(int player, int num_cards_playable, int cards_playable[10], int car
     printf("\n\n");
     counter = 0;
     
-    if(get_trick == 0){ //you didn't follow the first card, you won't receive trick and can play any card
+    //if get_trick == 0, you cannot follow the first card, you won't receive 
+    //trick and can play any card
+    //play the douglas, if don't have douglas play largest card
+    if(get_trick == 0){ 
         printf("get trick is 0\n");
         if(have_douglas(num_cards_playable,cards_playable) == 1){
             return DOUGLAS;
@@ -350,12 +373,15 @@ int optimize(int player, int num_cards_playable, int cards_playable[10], int car
             return cards_playable[num_cards_playable-1];
         }
     }
-    counter = 10;
-    
     
     
 //    printf("num_cards_played_previous_rounds = %d\n", num_cards_played_previous_rounds);
-    while(counter <= 49){ //fill the cards_potentially_played_this_round array
+
+    //***assign values to cards_potentially_played_this_round array***// 
+    
+    //counter initialize from 10 as cards range from 10-49
+    counter = 10;
+    while(counter <= 49){ 
         while(counter2 < num_cards_played_previous_rounds && flag == 0){
             if(counter == cards_played_previous_rounds[counter2]){
                 flag = 1;
@@ -364,13 +390,15 @@ int optimize(int player, int num_cards_playable, int cards_playable[10], int car
             counter2++;;
         }
         counter2 = 0;
+        
         while(counter2 < player && flag == 0){
             if(counter == cards_played_this_round[counter2]){
                 flag = 1;            
             }
             counter2++;
-        }
+        }        
         counter2 = 0;
+        
         while(counter2<num_cards_in_hand && flag == 0){
             if(counter == cards_in_hand[counter2]){
                 flag = 1;
@@ -378,6 +406,7 @@ int optimize(int player, int num_cards_playable, int cards_playable[10], int car
             counter2++;
         }
         counter2 = 0;
+        
         /*
         if the player next to me has already played a card in round before us, we can exclude the cards I discarded initially        
         */    
@@ -391,6 +420,9 @@ int optimize(int player, int num_cards_playable, int cards_playable[10], int car
         counter++;
     }
     counter = 0;
+    
+    //***assign values to cards_potentially_played_this_round array end***//
+    
 
     while(counter < num_cards_potentially_played_this_round){
         printf("%d ", cards_potentially_played_this_round[counter]);
@@ -398,12 +430,17 @@ int optimize(int player, int num_cards_playable, int cards_playable[10], int car
     }    
     printf("\n");
     printf("start of function\n");
-    if(player == 0){ //playing the first card in round
+    
+    //***strats***//
+    
+    //playing the first card in round
+    if(player == 0){ 
         printf("playing as first card\n");
         return first_card_in_round(num_cards_playable, cards_playable, num_cards_potentially_played_this_round, cards_potentially_played_this_round);
     }
     
-    else if(player == 3){ //playing the fourth card in round
+    //playing the fourth card in round
+    else if(player == 3){ 
         printf("playing as fourth card\n");
         return fourth_card_in_round(num_cards_playable, cards_playable, cards_played_this_round);
     }
@@ -412,9 +449,12 @@ int optimize(int player, int num_cards_playable, int cards_playable[10], int car
     
     }
     
+    //***strats end***//
+    
+    //usually doesn't run this return command, for safety measures
     return cards_playable[0];
-
 }
+
 
 int fourth_card_in_round(int num_cards_playable, int cards_playable[10], int cards_played_this_round[3]){
     int i = 0;
@@ -424,13 +464,23 @@ int fourth_card_in_round(int num_cards_playable, int cards_playable[10], int car
         i++;
     }
     printf("\n");
+    //penalty points for this round before my play
     int penalty_points = calculate_penalty_points(3, cards_played_this_round);
+    
+    //counter = num_cards_playble-1 and counter-- 
+    //as I search from the largest value to smallest 
     int counter = num_cards_playable-1;
+    
     printf("penalty points = %d\n",penalty_points);
-    if(penalty_points == 0){ //no penalty points this round
-        if(have_douglas(num_cards_playable, cards_playable) == 1){ //douglas is playable
-            if(max_num(3, cards_played_this_round) < DOUGLAS){ //max < DOUGLAS
-                while(counter >= 0){ //play largest card that isn't douglas 
+    
+    //no penalty points this round
+    if(penalty_points == 0){ 
+        //douglas is playable
+        if(have_douglas(num_cards_playable, cards_playable) == 1){ 
+            //the highest num that wins this round < DOUGLAS
+            if(max_num(3, cards_played_this_round) < DOUGLAS){ 
+                //play largest card that isn't douglas 
+                while(counter >= 0){ 
                     if(cards_playable[counter] != DOUGLAS){
                         printf("module 4\n");
                         printf("counter = %d, cards_playable[%d] = %d\n",counter, counter, cards_playable[counter]);
@@ -439,22 +489,29 @@ int fourth_card_in_round(int num_cards_playable, int cards_playable[10], int car
                     counter--;
                 }
                 counter = num_cards_playable-1;
-                printf("module 4.1\n"); //you only have douglas playable
+                //you only have douglas playable
+                printf("module 4.1\n"); 
                 return DOUGLAS;
             }
-            else{ //max > DOUGLAS
+            //highest card which wins this round > DOUGLAS, give douglas
+            else{ 
                 printf("module 5\n");
                 return DOUGLAS;
             }
         }
-        else{ //douglas is not playable, play largest card
+        //douglas is not playable, play largest card
+        else{ 
             printf("module 6\n");
             return cards_playable[num_cards_playable-1];
         }
     }
-    else{ //have penalty marks this round
-        if(have_douglas(num_cards_playable, cards_playable) == 1){ //douglas is playable
-            if(max_num(3, cards_played_this_round) < DOUGLAS){ //max < douglas
+    //have penalty marks this round
+    else{ 
+        //douglas is playable
+        if(have_douglas(num_cards_playable, cards_playable) == 1){ 
+            //highest card which wins this round  < douglas
+            if(max_num(3, cards_played_this_round) < DOUGLAS){
+                //play largest card that is < highest card which wins this round 
                 while(counter >= 0){
                     if(cards_playable[counter] < max_num(3, cards_played_this_round)){
                         printf("module 1\n");
@@ -462,12 +519,17 @@ int fourth_card_in_round(int num_cards_playable, int cards_playable[10], int car
                     }
                     counter--;
                 }
-            counter = num_cards_playable-1;
-                if(num_cards_playable == 1){ //you only have one card and it is douglas
+                counter = num_cards_playable-1;
+                
+                //you only have one card and it is douglas
+                if(num_cards_playable == 1){ 
                     printf("module 1.1\n");
                     return DOUGLAS;
                 }
-                else{ //you get the trick this round anyways, pick the largest card that isn't a douglas
+                //don't have a card < highest card which wins this round
+                //you get the trick this round anyways, pick the largest card that isn't a douglas
+                //(can be further improved to not pick prime)                
+                else{ 
                     printf("module 1.2\n");
                     while(counter >= 0){
                         if(cards_playable[counter] != DOUGLAS){
@@ -476,25 +538,33 @@ int fourth_card_in_round(int num_cards_playable, int cards_playable[10], int car
                     }
                 }
             }
-            else{ //max > DOUGALS
+            //highest value which wins this round > DOUGALS
+            else{ 
                 printf("module 2\n");
                 return DOUGLAS;
             }
         }
-        else{ //douglas is not playable
+        //douglas is not playable
+        else{ 
             while(counter >= 0){
+                //play largest card that is < highest number which wins this round
                 if(cards_playable[counter] < max_num(3, cards_played_this_round)){
                     printf("module 3, max_num = %d\n",max_num(3, cards_played_this_round));
                     return cards_playable[counter];
                 }
                 counter--;
             }
-            counter = num_cards_playable-1;  
+            counter = num_cards_playable-1; 
+            
+            //largest card > max_num, you get the trick anyways, pick the largest number 
+            //(can be further improved for not picking prime)
             printf("module 3.1\n");
-            return cards_playable[num_cards_playable-1]; //largest card > max_num, you get the trick anyways, pick the largest number (can be further improved)
+            return cards_playable[num_cards_playable-1]; 
         }
     }
     printf("no module is runned\n");
+    
+    //return smallest number if all cases fail
     return cards_playable[0];
 }
 
@@ -507,7 +577,9 @@ int first_card_in_round(int num_cards_playable, int cards_playable[10], int num_
 //***optimizing functions ends***//
 
 //***assisting functions***//
-int is_prime(int number){ //return 1 if prime, else return 0
+
+//return 1 if prime, else return 0
+int is_prime(int number){ 
     int counter = 2;
     while(counter < number){
         if(number % counter == 0)
@@ -517,7 +589,8 @@ int is_prime(int number){ //return 1 if prime, else return 0
     return 1;
 }
 
-int is_cocomposite(int number1, int number2){ //return 1 if cocomposite, else return 0
+//return 1 if cocomposite, else return 0
+int is_cocomposite(int number1, int number2){ 
     int counter = 2;
     while(counter < number1){
         if((number1 % counter == 0) && (number2 % counter == 0) && (counter != number2))
@@ -527,6 +600,7 @@ int is_cocomposite(int number1, int number2){ //return 1 if cocomposite, else re
     return 0;
 }
 
+//calculate the penalty points in round before my play
 int calculate_penalty_points(int num_cards_played_this_round, int cards_played_this_round[3]){
     int counter = 0;
     int penalty_points = 0;
@@ -542,7 +616,8 @@ int calculate_penalty_points(int num_cards_played_this_round, int cards_played_t
     return penalty_points;
 }
 
-int have_douglas(int num_cards_playable, int cards_playable[10]){ //return 1 if have douglas, else return 0
+//return 1 if have douglas in array, else return 0
+int have_douglas(int num_cards_playable, int cards_playable[10]){ 
     int counter = 0;
     while(counter < num_cards_playable){
         if(cards_playable[counter] == DOUGLAS){
@@ -553,7 +628,8 @@ int have_douglas(int num_cards_playable, int cards_playable[10]){ //return 1 if 
     return 0;
 }
 
-int max_num(int num_cards_played_this_round, int cards_played_this_round[3]){ //return the maximum value card which follows with the first card played before me this round
+//return the maximum value card which wins the round before my play
+int max_num(int num_cards_played_this_round, int cards_played_this_round[3]){ 
     int counter = 0;
     int max = 0;
     int first_is_prime = 0; //0 if first card is non prime, 1 if it is prime
@@ -577,6 +653,7 @@ int max_num(int num_cards_played_this_round, int cards_played_this_round[3]){ //
     }
     return max;
 }
+
 //***assisting functions end***//
 
 
