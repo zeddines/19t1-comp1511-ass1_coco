@@ -148,12 +148,27 @@ int main(){
     //***discard cards***// discard the three largest cards
     
     if(game_state == 1){
+        int cards_discarded = 0;
         while(counter < 10){
             scanf("%d", &cards_in_hand[counter]);
             counter++;
         }
-        counter = 0;
-        printf("%d %d %d", cards_in_hand[9], cards_in_hand[8], cards_in_hand[7]);
+        counter = 9;
+        //discard douglas if possible
+        //discard card from largest to smallest
+        if(have_douglas(10, cards_in_hand) == 1){
+            printf("%d ",DOUGLAS);
+            while(counter >= 0 && cards_discarded < 2){
+                if(cards_in_hand[counter] != DOUGLAS){
+                    printf("%d ", cards_in_hand[counter]);
+                    cards_discarded++;
+                }
+                counter--;
+            }
+        }
+        else{
+            printf("%d %d %d", cards_in_hand[9], cards_in_hand[8], cards_in_hand[7]);
+        }
     }
     
     //***discard cards end***//
